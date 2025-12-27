@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏分享站</title>
+    <style>
+        :root {
+            --list-w: 200px;
+            --game-w: 500px;
+            --game-h: 130px;
+            --game-gap: 40px;
+            --margin-v: 60px;
+            --between: 50px;
+            --return-h: 50px;
+            --return-w: 100px;
+            --return-b: 50px;
+            --return-r: 50px;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #f5f5f5;
+        }
+        .div1 {
+            height: 100px;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .div1 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .search {
+            margin: 50px auto 60px;
+            width: 400px;
+            height: 50px;
+            border: 2px solid #000;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .search input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        .search-placeholder {
+            height: 0;
+            overflow: hidden;
+        }
+        .filter-group {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            color: #3498db;
+            font-size: 16px;
+            line-height: 50px;
+        }
+        .filter-title {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .filter-item {
+            display: block;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .filter-item:hover {
+            color: #61c1ff;
+        }
+        .filter-main {
+            font-size: 20px;
+            margin: 8px 0 4px;
+        }
+        #main {
+            width: 100%;
+            min-width: 800px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: flex-start;
+            padding: 0 var(--margin-v) calc(var(--margin-v) + var(--return-h) + var(--return-b)) var(--margin-v);
+            box-sizing: border-box;
+            position: relative;
+        }
+        #main::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            flex-shrink: 0;
+        }
+        .list-wrapper {
+            margin-left: var(--margin-v);
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+        }
+        .list-div {
+            width: var(--list-w);
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            height: calc(8 * var(--game-h) + 7 * var(--game-gap));
+        }
+        .list-div img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .game-wrapper {
+            margin-left: var(--between);
+            display: flex;
+            flex-direction: column;
+            gap: var(--game-gap);
+            position: relative;
+            padding-bottom: 40px;
+        }
+        .game-div {
+            width: var(--game-w);
+            height: var(--game-h);
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .game-div:hover {
+            transform: translateY(-6px);
+        }
+        .game-div img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .next-page {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 15px;
+            background: #808080;
+            color: #fff;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* 返回按钮样式 */
+        .return-div {
+            position: absolute;
+            bottom: var(--return-b);
+            right: var(--return-r);
+            width: var(--return-w);
+            height: var(--return-h);
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none; /* 去掉下划线 */
+        }
+    </style>
+</head>
+<body>
+    <div class="div1"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fDI%3D&auto=format&fit=crop&w=1920&q=80" alt="top img"></div>
+    <div class="search"><input placeholder="搜索"></div>
+    <div class="search-placeholder"></div>
+
+    <div id="main">
+        <div class="list-wrapper">
+            <div class="filter-group">
+                <div class="filter-title">筛选条件</div>
+                <div class="filter-main">主类型</div>
+                <label class="filter-item">休闲</label>
+                <label class="filter-item">动作</label>
+                <label class="filter-item">冒险</label>
+                <label class="filter-item">策略</label>
+                <label class="filter-item">模拟</label>
+                <label class="filter-item">角色扮演</label>
+                <label class="filter-item">体育</label>
+                <label class="filter-item">竞速</label>
+                <label class="filter-item">软件</label>
+
+                <div class="filter-main" style="margin-top: 12px;">子类型</div>
+                <label class="filter-item">探索</label>
+                <label class="filter-item">点击游戏</label>
+                <label class="filter-item">挂机游戏</label>
+                <label class="filter-item">沉浸式模拟</label>
+                <label class="filter-item">隐藏物体</label>
+                <label class="filter-item">自选历险体验</label>
+                <label class="filter-item">砍杀</label>
+                <label class="filter-item">轻度</label>
+                <label class="filter-item">收集马拉松</label>
+                <label class="filter-item">竞技场射击</label>
+            </div>
+            <div class="list-div"><img src="" alt="list img"></div>
+        </div>
+
+        <div class="game-wrapper">
+            <div class="game-div"><img src="" alt="game 1"></div>
+            <div class="game-div"><img src="" alt="game 2"></div>
+            <div class="game-div"><img src="" alt="game 3"></div>
+            <div class="game-div"><img src="" alt="game 4"></div>
+            <div class="game-div"><img src="" alt="game 5"></div>
+            <div class="game-div"><img src="" alt="game 6"></div>
+            <div class="game-div"><img src="" alt="game 7"></div>
+            <div class="game-div"><img src="" alt="game 8"></div>
+            <div class="next-page">下一页</div>
+        </div>
+
+        <!-- 返回按钮：点击直接跳转 -->
+        <a class="return-div" href="https://kane-gc.github.io/GameSharingStationWeb/">返回</a>
+    </div>
+</body>
+</html>

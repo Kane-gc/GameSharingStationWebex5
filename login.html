@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>登录 - 游戏分享站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #ffffff;
+      --primary: #00c853;
+      --primary-dark: #009624;
+      --text: #212121;
+      --muted: #616161;
+      --error: #ff5252;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    /* 星空 */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">\
+          <circle fill="%23fff" cx="20" cy="30" r="1"/>\
+          <circle fill="%23fff" cx="60" cy="70" r=".8"/>\
+          <circle fill="%23fff" cx="130" cy="20" r="1.2"/>\
+          <circle fill="%23fff" cx="180" cy="160" r=".7"/>\
+          <circle fill="%23fff" cx="40" cy="180" r=".9"/>\
+        </svg>');
+      animation: move 120s linear infinite;
+      opacity: .15;
+    }
+    @keyframes move {
+      0% { background-position: 0 0; }
+      100% { background-position: -10000px 5000px; }
+    }
+
+    /* 卡片 */
+    /* 新增：卡片裁切 */
+    .card {
+      position: relative;          /* 让伪元素相对卡片定位 */
+      overflow: hidden;            /* 关键：隐藏逸出部分 */
+      background: var(--card);
+      width: 100%;
+      max-width: 400px;
+      padding: 40px 32px;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      transform-style: preserve-3d;
+      transition: transform 0.35s, box-shadow 0.35s;
+      animation: fadeIn 0.8s both;
+    }
+    
+    /* 扫光仅覆盖卡片 */
+    .card::before {
+      content: "";
+      position: absolute;
+      left: -150%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: skewX(-25deg);
+      transition: left 0.7s;
+    }
+    .card:hover::before { left: 150%; }
+
+    .card h2 {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 26px;
+      letter-spacing: 1px;
+    }
+    .card label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .card input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      border: 1px solid #cfd8dc;
+      border-radius: 8px;
+      background: #fafafa;
+      color: var(--text);
+      font-size: 15px;
+      transition: border 0.3s, box-shadow 0.3s;
+    }
+    .card input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.2);
+      outline: none;
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* 按钮 */
+    .card button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+    }
+    .card button:active {
+      transform: translateY(0);
+    }
+    /* 波纹 */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+
+    .extra {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .extra a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .extra a:hover {
+      text-decoration: underline;
+    }
+
+    /* 粒子画布 */
+    canvas#particle {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle"></canvas>
+  <div class="card">
+    <h2>登录游戏分享站</h2>
+    <form id="loginForm">
+      <label>用户名 / 邮箱</label>
+      <input type="text" id="user" placeholder="请输入账号" required />
+      <label>密码</label>
+      <input type="password" id="pwd" placeholder="请输入密码" required />
+      <button type="submit">立 即 登 录</button>
+    </form>
+    <div class="extra">
+      还没有账号？<a href="https://kane-gc.github.io/GameSharingStationWeb/register.html">立即注册</a>
+    </div>
+  </div>
+
+  <script>
+    /* 粒子爆炸 */
+    const canvas = document.getElementById('particle'),
+          ctx = canvas.getContext('2d');
+    let W = innerWidth, H = innerHeight;
+    canvas.width = W; canvas.height = H;
+    addEventListener('resize', () => {
+      W = innerWidth; H = innerHeight;
+      canvas.width = W; canvas.height = H;
+    });
+    const particles = [];
+    class Particle {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.r = Math.random() * 3 + 1;
+        this.vx = (Math.random() - 0.5) * 6;
+        this.vy = (Math.random() - 0.5) * 6;
+        this.alpha = 1;
+        this.decay = 0.015;
+        this.color = `hsl(${Math.random() * 40 + 180}, 100%, 60%)`;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    addEventListener('click', e => {
+      for (let i = 0; i < 28; i++) particles.push(new Particle(e.clientX, e.clientY));
+    });
+    (function animate() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach((p, i) => {
+        p.update(); p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+      });
+      requestAnimationFrame(animate);
+    })();
+
+    /* 表单逻辑 */
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = document.getElementById('user');
+      const pwd = document.getElementById('pwd');
+      if (!user.value || !pwd.value) {
+        [user, pwd].forEach(i => i.classList.add('shake'));
+        setTimeout(() => {
+          [user, pwd].forEach(i => i.classList.remove('shake'));
+        }, 300);
+        return;
+      }
+      alert('登录功能待接入后端 ~');
+    });
+
+    /* 波纹 */
+    document.querySelector('button').addEventListener('click', function (e) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+      ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  </script>
+</body>
+</html>
