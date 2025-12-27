@@ -15,198 +15,108 @@
       --card-width: 900px;
       --card-height: 400px;
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;
+      background:var(--light);
+      color:var(--text);
+      display:flex;
+      flex-direction:column;
     }
-    html, body {
-      height: 100%;
+    header{
+      background:var(--dark-bg);
+      color:#fff;
+      padding:20px 0;
+      box-shadow:0 2px 5px rgba(0,0,0,.1);
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
-      background: var(--light);
-      color: var(--text);
-      display: flex;          
-      flex-direction: column; 
+    .header-content{
+      max-width:1200px;margin:0 auto;padding:0 20px;
+      display:flex;justify-content:space-between;align-items:center;
     }
-    header {
-      background: var(--dark-bg);
-      color: #fff;
-      padding: 20px 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    .logo{font-size:28px;font-weight:bold;color:var(--theme);}
+    nav ul{list-style:none;display:flex;gap:30px;}
+    nav a{color:#fff;text-decoration:none;transition:color .3s;}
+    nav a:hover{color:var(--theme);}
+    .container{
+      max-width:1200px;width:100%;margin:0 auto;padding:30px 20px;
+      flex:1;display:flex;flex-direction:column;
     }
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    h1{text-align:center;margin-bottom:10px;color:var(--dark-bg);}
+    .subtitle{text-align:center;color:#666;margin-bottom:30px;}
+    .showcase-wrapper{
+      position:relative;width:100%;height:var(--card-height);
+      overflow:hidden;border-radius:var(--radius);
+      box-shadow:0 4px 20px rgba(0,0,0,.1);background:#fff;
     }
-    .logo {
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--theme);
+    .showcase-track{display:flex;height:100%;transition:transform .6s ease;}
+    .showcase-card{min-width:100%;height:100%;display:flex;background:#fff;}
+    .showcase-left{flex:1;background:#e0e0e0;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;}
+    .showcase-right{width:320px;padding:var(--gap);display:flex;flex-direction:column;justify-content:space-between;}
+    .game-title{font-size:24px;font-weight:bold;color:var(--dark-bg);margin-bottom:10px;}
+    .game-rating{font-size:28px;color:var(--theme);margin-bottom:20px;}
+    .tags-area{flex:1;background:#fafafa;border-radius:var(--radius);padding:15px;border:1px dashed #ccc;color:#999;font-size:14px;}
+    .arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;width:48px;height:48px;border-radius:50%;font-size:24px;cursor:pointer;transition:background .3s;z-index:2;}
+    .arrow:hover{background:rgba(0,0,0,.6);}
+    .arrow.prev{left:20px;}
+    .arrow.next{right:20px;}
+    .indicators{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.6);cursor:pointer;transition:background .3s;}
+    .dot.active{background:var(--theme);}
+    footer{background:var(--dark-bg);color:#fff;text-align:center;padding:40px 20px;}
+
+
+    body::before{
+      content:'';position:fixed;z-index:-1;inset:0;
+      background:linear-gradient(#0b0f1a 0%,#1d2b3a 100%);
     }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 30px;
+    body::after{
+      content:'';position:fixed;z-index:-1;inset:0;
+      background:url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">\
+      <circle fill="%23fff" cx="10" cy="30" r="1"/>\
+      <circle fill="%23fff" cx="60" cy="80" r=".8"/>\
+      <circle fill="%23fff" cx="130" cy="20" r="1.2"/>\
+      <circle fill="%23fff" cx="180" cy="160" r=".7"/>\
+      <circle fill="%23fff" cx="40" cy="180" r=".9"/>\
+      </svg>');
+      animation:move 120s linear infinite;
+      opacity:.15;
     }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      transition: color 0.3s;
+    @keyframes move{
+      0%{background-position:0 0;}
+      100%{background-position:-10000px 5000px;}
     }
-    nav a:hover {
-      color: var(--theme);
+
+
+    header,.container,footer{animation:fadeIn .8s both;}
+    header{animation-delay:.1s;}
+    .container{animation-delay:.2s;}
+    footer{animation-delay:.3s;}
+    @keyframes fadeIn{
+      from{opacity:0;transform:translateY(20px);}
+      to{opacity:1;transform:translateY(0);}
     }
-    .container {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 30px 20px;
-      flex: 1;              
-      display: flex;        
-      flex-direction: column;
+
+    .showcase-wrapper{
+      transform-style:preserve-3d;
+      transition:transform .35s,box-shadow .35s;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-      color: var(--dark-bg);
+    .showcase-wrapper:hover{
+      transform:translateY(-6px) rotateX(3deg);
+      box-shadow:0 12px 30px rgba(0,0,0,.2);
     }
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 30px;
+    .showcase-wrapper::after{
+      content:'';
+      position:absolute;left:-150%;top:0;width:100%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+      transform:skewX(-25deg);
+      transition:left .7s;
     }
-     .showcase-wrapper {
-          position: relative;
-          width: 100%;
-          height: var(--card-height);
-          overflow: hidden;
-          border-radius: var(--radius);
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          background: #fff;
-        }
-        .showcase-track {
-          display: flex;
-          height: 100%;
-          transition: transform 0.6s ease;
-        }
-        .showcase-card {
-          min-width: 100%;
-          height: 100%;
-          display: flex;
-          background: #fff;
-        }
-        .showcase-left {
-          flex: 1;
-          background: #e0e0e0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #999;
-          font-size: 14px;
-        }
-    .showcase-right {
-      width: 320px;
-      padding: var(--gap);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .game-title {
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--dark-bg);
-      margin-bottom: 10px;
-    }
-    .game-rating {
-      font-size: 28px;
-      color: var(--theme);
-      margin-bottom: 20px;
-    }
-    .tags-area {
-      flex: 1;
-      background: #fafafa;
-      border-radius: var(--radius);
-      padding: 15px;
-      border: 1px dashed #ccc;
-      color: #999;
-      font-size: 14px;
-    }
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.4);
-      color: #fff;
-      border: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      font-size: 24px;
-      cursor: pointer;
-      transition: background 0.3s;
-      z-index: 2;
-    }
-    .arrow:hover {
-      background: rgba(0, 0, 0, 0.6);
-    }
-    .arrow.prev {
-      left: 20px;
-    }
-    .arrow.next {
-      right: 20px;
-    }
-    .indicators {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .dot.active {
-      background: var(--theme);
-    }
-    footer {
-      background: var(--dark-bg);
-      color: #fff;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 20px;
-      }
-      nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-      }
-      .showcase-card {
-        flex-direction: column;
-      }
-      .showcase-left {
-        height: 250px;
-      }
-	  }
-      .showcase-right {
-        width: 100%;
-        height: 150px;
-      }
+    .showcase-wrapper:hover::after{left:150%;}
+
+    canvas#particle{
+      position:fixed;inset:0;pointer-events:none;z-index:999;
     }
   </style>
 </head>
@@ -214,12 +124,13 @@
   <header>
     <div class="header-content">
       <div class="logo">游戏分享站</div>
+      <!-- 导航链接 -->
       <nav>
         <ul>
-          <li><a href="#">首页</a></li>
-          <li><a href="https://kane-gc.github.io/GameSharingStationWeb/GameCategory%20">游戏分类</a></li>
+          <li><a href="index.html">首页</a></li>
+          <li><a href="category.html">游戏分类</a></li>
           <li><a href="#">待定</a></li>
-          <li><a href="https://kane-gc.github.io/GameSharingStationWeb/login.html">登陆</a></li>
+          <li><a href="login.html">登陆</a></li>
         </ul>
       </nav>
     </div>
@@ -234,9 +145,8 @@
         <!-- 游戏 1 -->
         <div class="showcase-card">
           <div class="showcase-left">
-			  <img src="images/Baldur's Gate 3.jpg">
-
-		  </div>
+            <img src="images/Baldur's Gate 3.jpg" alt="博德之门3">
+          </div>
           <div class="showcase-right">
             <div>
               <div class="game-title">博德之门3</div>
@@ -302,6 +212,9 @@
     <div class="footer-content"></div>
   </footer>
 
+
+  <canvas id="particle"></canvas>
+
   <script>
     const track = document.getElementById('track');
     const cards = document.querySelectorAll('.showcase-card');
@@ -343,6 +256,49 @@
     wrapper.addEventListener('mouseleave', resetAuto);
 
     resetAuto();
+  </script>
+
+  <script>
+    const canvas=document.getElementById('particle'),ctx=canvas.getContext('2d');
+    let W=innerWidth,H=innerHeight;
+    canvas.width=W;canvas.height=H;
+    addEventListener('resize',()=>{W=innerWidth;H=innerHeight;canvas.width=W;canvas.height=H;});
+    const particles=[];
+    class Particle{
+      constructor(x,y){
+        this.x=x;this.y=y;
+        this.r=Math.random()*3+1;
+        this.vx=(Math.random()-0.5)*6;
+        this.vy=(Math.random()-0.5)*6;
+        this.alpha=1;
+        this.decay=.015;
+        this.color=`hsl(${Math.random()*40+180},100%,60%)`;
+      }
+      update(){
+        this.x+=this.vx;this.y+=this.vy;
+        this.alpha-=this.decay;
+      }
+      draw(){
+        ctx.save();
+        ctx.globalAlpha=this.alpha;
+        ctx.fillStyle=this.color;
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    addEventListener('click',e=>{
+      for(let i=0;i<28;i++)particles.push(new Particle(e.clientX,e.clientY));
+    });
+    (function animate(){
+      ctx.clearRect(0,0,W,H);
+      particles.forEach((p,i)=>{
+        p.update();p.draw();
+        if(p.alpha<=0)particles.splice(i,1);
+      });
+      requestAnimationFrame(animate);
+    })();
   </script>
 </body>
 </html>
