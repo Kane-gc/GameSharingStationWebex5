@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏详情页 | GameCategory</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-light: #61c1ff;
+            --bg-page: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.1);
+            --text-main: #fff;
+            --text-light: rgba(255, 255, 255, 0.8);
+            --star: #f39c12;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 6px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, .08);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, .12);
+            --max-width: 1200px;
+            --thumb-w: 100px;
+            --thumb-h: 60px;
+            --arrow-size: 44px;
+            --arrow-bg: rgba(0, 0, 0, .45);
+            --arrow-hover: rgba(0, 0, 0, .65);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 星空背景和基础样式 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            position: relative;
+        }
+        
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 星空背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            z-index: -1;
+            inset: 0;
+            background: linear-gradient(#0b0f1a 0%, #1d2b3a 100%);
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            z-index: -1;
+            inset: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle fill="%23fff" cx="10" cy="30" r="1"/><circle fill="%23fff" cx="60" cy="80" r=".8"/><circle fill="%23fff" cx="130" cy="20" r="1.2"/><circle fill="%23fff" cx="180" cy="160" r=".7"/><circle fill="%23fff" cx="40" cy="180" r=".9"/></svg>');
+            animation: move 120s linear infinite;
+            opacity: .15;
+        }
+        
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: -10000px 5000px; }
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 整体渐现动画 */
+        .back-top, .container {
+            animation: fadeIn .8s both;
+        }
+        
+        .back-top { animation-delay: .1s; }
+        .container { animation-delay: .2s; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .back-top {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 30px;
+            background: rgba(52, 152, 219, 0.8);
+            color: #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all .3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .back-top:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .container {
+            max-width: var(--max-width);
+            margin: 60px auto 20px;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+        }
+        .left {
+            flex: 3;
+        }
+        .right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 毛玻璃效果和边框 */
+        .big-show {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .big-show img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            border-radius: var(--radius-lg);
+        }
+        .big-show img.active {
+            display: block;
+        }
+        
+        /* 3D浮起和扫光效果 */
+        .big-show {
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .big-show:hover {
+            transform: translateY(-6px) rotateX(3deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .big-show::after {
+            content: '';
+            position: absolute;
+            left: -150%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.7s;
+            pointer-events: none;
+        }
+        
+        .big-show:hover::after {
+            left: 150%;
+        }
+        
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: var(--arrow-size);
+            height: var(--arrow-size);
+            background: var(--arrow-bg);
+            color: #fff;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .arrow:hover {
+            background: var(--arrow-hover);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .arrow.left {
+            left: 10px;
+        }
+        .arrow.right {
+            right: 10px;
+        }
+        .thumbs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .thumbs img {
+            width: var(--thumb-w);
+            height: var(--thumb-h);
+            object-fit: cover;
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        .thumbs img.active {
+            border-color: var(--primary);
+        }
+        
+        /* 3D悬停效果 */
+        .thumbs img:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .poster img {
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .poster img:hover {
+            transform: translateY(-6px) rotateX(3deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .wish {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px;
+            text-align: center;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wish:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* 扫光效果 */
+        .wish::after {
+            content: '';
+            position: absolute;
+            left: -150%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.7s;
+            pointer-events: none;
+        }
+        
+        .wish:hover::after {
+            left: 150%;
+        }
+        
+        .info {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 0 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .info:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .info-left {
+            flex: 1;
+            padding-right: 20px;
+        }
+        .info-right {
+            text-align: right;
+        }
+        .stars {
+            color: var(--star);
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--star);
+            margin-top: 4px;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tags span {
+            background: var(--primary);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary);
+        }
+        .tags span:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        /* 粒子画布 */
+        #particle{
+            position:fixed;
+            inset:0;
+            pointer-events:none;   /* 关键：不接收任何鼠标事件 */
+            z-index:999;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <a class="back-top" href="index.html">← 返回</a>
+    <div class="container">
+        <div class="left">
+            <div class="big-show">
+                <img src="https://kane-gc.github.io/GameSharingStationWeb/GameCategory%20/插图1.png" alt="For Honor" class="active">
+                <img src="https://via.placeholder.com/800x400?text=截图2" alt="截图2">
+                <img src="https://via.placeholder.com/800x400?text=截图3" alt="截图3">
+                <img src="https://via.placeholder.com/800x400?text=截图4" alt="截图4">
+                <img src="https://via.placeholder.com/800x400?text=截图5" alt="截图5">
+                <img src="https://via.placeholder.com/800x400?text=截图6" alt="截图6">
+                <div class="arrow left">‹</div>
+                <div class="arrow right">›</div>
+            </div>
+            <div class="thumbs">
+                <img src="https://kane-gc.github.io/GameSharingStationWeb/GameCategory%20/插图1.png" class="active" data="0">
+                <img src="https://via.placeholder.com/100x60?text=2" data="1">
+                <img src="https://via.placeholder.com/100x60?text=3" data="2">
+                <img src="https://via.placeholder.com/100x60?text=4" data="3">
+                <img src="https://via.placeholder.com/100x60?text=5" data="4">
+                <img src="https://via.placeholder.com/100x60?text=6" data="5">
+            </div>
+        </div>
+        <div class="right">
+            <div class="poster">
+                <img src="https://via.placeholder.com/300x400?text=海报" alt="海报">
+            </div>
+            <div class="wish">添加至您的愿望单</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="info">
+            <div class="info-left">
+                <h2>游戏简介</h2>
+                <p>在这款第三人称英雄近战格斗游戏中，你可以单挑，也可以与好友并肩作战。化身维京人、武士、武林人士或异乡人，进入战乱世界。体验残酷的PvP、团队模式或刺激的故事战役。</p>
+                <div class="tags">
+                    <span>中世纪剑术</span>
+                    <span>动作</span>
+                    <span>多人</span>
+                    <span>格斗</span>
+                    <span>玩家对战</span>
+                    <span>第三人称</span>
+                </div>
+            </div>
+            <div class="info-right">
+                <div class="stars">★★★★★</div>
+                <div class="score">8.8</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 粒子画布 -->
+    <canvas id="particle"></canvas>
+    
+    <script>
+        const bigs = document.querySelectorAll('.big-show img');
+        const thumbs = document.querySelectorAll('.thumbs img');
+        const leftA = document.querySelector('.arrow.left');
+        const rightA = document.querySelector('.arrow.right');
+        let cur = 0;
+        const show = i => {
+            bigs.forEach((x, idx) => x.classList.toggle('active', idx === i));
+            thumbs.forEach((x, idx) => x.classList.toggle('active', idx === i));
+            cur = i;
+        };
+        thumbs.forEach(t => t.onclick = () => show(+t.dataset));
+        leftA.onclick = () => show((cur - 1 + bigs.length) % bigs.length);
+        rightA.onclick = () => show((cur + 1) % bigs.length);
+        let auto = setInterval(() => show((cur + 1) % bigs.length), 3000);
+        document.querySelector('.big-show').onmouseenter = () => clearInterval(auto);
+        document.querySelector('.big-show').onmouseleave = () => auto = setInterval(() => show((cur + 1) % bigs.length), 3000);
+    </script>
+    
+    <!-- 点击粒子爆炸 -->
+    <script>
+        const canvas=document.getElementById('particle'),ctx=canvas.getContext('2d');
+        let W=innerWidth,H=innerHeight;
+        canvas.width=W;canvas.height=H;
+        addEventListener('resize',()=>{W=innerWidth;H=innerHeight;canvas.width=W;canvas.height=H;});
+        const particles=[];
+        class Particle{
+            constructor(x,y){
+                this.x=x;this.y=y;
+                this.r=Math.random()*3+1;
+                this.vx=(Math.random()-0.5)*6;
+                this.vy=(Math.random()-0.5)*6;
+                this.alpha=1;
+                this.decay=.015;
+                this.color=`hsl(${Math.random()*40+180},100%,60%)`;
+            }
+            update(){
+                this.x+=this.vx;this.y+=this.vy;
+                this.alpha-=this.decay;
+            }
+            draw(){
+                ctx.save();
+                ctx.globalAlpha=this.alpha;
+                ctx.fillStyle=this.color;
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        document.addEventListener('click',e=>{
+            for(let i=0;i<28;i++)particles.push(new Particle(e.clientX,e.clientY));
+        });
+        (function animate(){
+            ctx.clearRect(0,0,W,H);
+            particles.forEach((p,i)=>{
+                p.update();p.draw();
+                if(p.alpha<=0)particles.splice(i,1);
+            });
+            requestAnimationFrame(animate);
+        })();
+    </script>
+</body>
+</html>
